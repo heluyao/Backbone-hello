@@ -1,4 +1,4 @@
 Backbone-hello
 ==============
 
-Backbone-Routes
+Backbone-Routes pushState:true history
