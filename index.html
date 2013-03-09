@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>hello world</title>
+<meta charset="utf-8">
+<script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+<script>!window.jQuery && document.write(unescape('%3Cscript src="jquery.js"%3E%3C/script%3E'))</script>
+<script src="underscore-1.3.1.js"></script>
+<script src="backbone.js"></script>
+</head>
+<body>
+<div style="height:1000px;">kill</div>
+<a class="a" href="#" title="1">01</a>
+<a class="a" href="#" title="2">02</a>
+<a class="a" href="#" title="3">03</a>
+<a class="a" href="#" title="4">04</a>
+<a class="a" href="#" title="5">05</a>
+<a class="a" href="#" title="6">06</a>
+<script>
+var appModel = Backbone.Model.extend({
+	defaults: function(){
+		return {
+			'ob':'daxiong'
+		}
+    },
+	toggle:function(pid){
+		alert('toggle:'+pid);
+	}
+});
+var appCollection = Backbone.Collection.extend({
+	model : appModel,
+	url:  function() {
+        return '/api.php';
+    }
+});
+var appView = Backbone.View.extend({
+	initialize:function(){
+		this.model.toggle(this.model.get('pid'));
+	}
+});
+var appRouter = Backbone.Router.extend({
+	routes:{
+		'hello/:pid':'hello'
+	},
+	openPage: function(pageNumber) {
+		this.navigate("hello/" + pageNumber,{trigger: true});
+	},
+	hello:function(pid){
+		var c = new appCollection();
+		var m = new appModel();
+		m.set({'pid':pid});
+		m.bind('change',function(){
+			var v = new appView({model:this});
+		});
+		c.fetch({
+			success:function(o){
+				m.set({'ob':'dingdang'});
+			}
+		});
+	}
+});
+var router = new appRouter();
+$('.a').click(function(e){
+	e.preventDefault();
+	router.openPage($(this).attr('title'));
+});
+//Backbone.history.start({pushState:true,root: "/index.html#"});
+Backbone.history.start();
+</script>
+</body>
+</html>
